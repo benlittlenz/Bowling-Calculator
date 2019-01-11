@@ -4,18 +4,20 @@ module.exports = {
   ifLastSpare,
   ifLastStrike,
   strike, 
-  spare
+  spare,
+  notTen
 }
 
 const scores = [[10, 0], [2, 3], [9, 1], [3, 4], [1, 4], 
         [3, 2], [4, 2], [1, 2], [3, 3], [10, 2, 10]]
 
-let totalScores = 0;
+//let totalScores = 0;
 // const isStrike = []  
 // let isSpare = []
 // let notEqualTen = []
 
 const state = {
+  totalScores: 0,
   isStrike: [],
   isSpare: [],
   notEqualTen: []
@@ -24,28 +26,20 @@ const state = {
 function calcScores() {
 
   for(let i = 0; i < 9; i++) {
-    //console.log(scores[i][0], scores[i][1])  
-    //console.log(scores[i][0] + scores[i][1])
-    //spare(scores)
-    //console.log(scores[9][0] + scores[9][1] !== 10)
-    //if(scores[i][0] === 10 && scores[9][0] !== 10 || scores[9][0] + scores[9][1] !== 10) {
-
-
+    //if frame is Strike
     if(scores[i][0] === 10) { 
       state.isStrike.push(scores[i], scores[i + 1]) //Adds Strike frame + next frame to calculate
-      console.log(state.isStrike)
-      //console.log(scores[i])   
-    } else if (scores[i][0] + scores[i][1] === 10) {
-      //console.log(scores[i])
+      //console.log(state.isStrike)
 
+      //if frame is Spare
+    } else if (scores[i][0] + scores[i][1] === 10) {
       state.isSpare.push(scores[i], scores[i + 1]) //Add Spare frame + next frame to calculate
-      //console.log(isSpare)
-      //console.log('not strike')
+      //console.log(state.isSpare)
     }
+    //if frame is not Spare or Strike
     else if(scores[i][0] + scores[i][1] !== 10) {
-      //console.log(scores[i])
       state.notEqualTen.push(scores[i])
-      console.log(state.notEqualTen)
+      //console.log(state.notEqualTen)
     }
   }
   //console.log(isSpare)
@@ -73,46 +67,28 @@ function scoreFrame(frame, nextFrame) {
 }
 
 function spare() {
-  console.log(state.isSpare[0][0] + state.isSpare[0][1])
-  totalScores += state.isSpare[0][0] + state.isSpare[0][1]
-  console.log(totalScores)
-  return totalScores
+  state.totalScores += state.isSpare[0][0] + state.isSpare[0][1] + state.isSpare[1][0]
+  //console.log(state.totalScores)
+  //return state.totalScores
 }
 spare()
 
 function strike() {
-  //let total = 0
-
-  // if(isStrike.length >= 2) {
-  //   for(let i = 0; i < isStrike.length; i++) {
-  //     if(isStrike[i][0] !== 10) {
-  //       total += isStrike[i].reduce((a, b) => a+b)
-  //     }
-  //   }
-  //   console.log('fdgff')
-  // }
-  
-
   for (const i of state.isStrike) {
-    totalScores += i.reduce((a, b) => a+b, 0)
+    state.totalScores += i.reduce((a, b) => a+b, 0)
   }
-  console.log(totalScores)
-  return totalScores
+  //console.log(state.totalScores)
+  //return state.totalScores
 }
 strike()
 
-function notEvalTen() {
-  for(const i of notEqualTen) {
-    totalScores += i.reduce((a, b) => a+b, 0)
+function notTen() {
+  for(const i of state.notEqualTen) {
+    state.totalScores += i.reduce((a, b) => a + b, 0)
   }
-  console.log(totalScores)
-  return totalScores
+  console.log(state.totalScores)
 }
-notEvalTen()
-
-
-
-
+notTen()
 
 function score(frame) {
   let total = 0
@@ -133,3 +109,18 @@ function ifLastStrike(frame) {
     return 10 + frame[1] + frame[2]
   }
 }
+
+console.log(state.totalScores)
+
+
+
+//let total = 0
+
+  // if(isStrike.length >= 2) {
+  //   for(let i = 0; i < isStrike.length; i++) {
+  //     if(isStrike[i][0] !== 10) {
+  //       total += isStrike[i].reduce((a, b) => a+b)
+  //     }
+  //   }
+  //   console.log('fdgff')
+  // }
